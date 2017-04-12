@@ -46,7 +46,7 @@ class App extends Component {
 
     }
 
-    this.apiUrl= 'http://localhost:8080';
+    this.apiUrl= 'https://express-ai.herokuapp.com';
     this.progressHeight= 2;
   }
 
