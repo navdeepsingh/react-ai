@@ -33,7 +33,7 @@ class App extends Component {
       linkFacebook : false,
       pullTwitter : false,
       pullFacebook : false,
-      analyzed : true,
+      analyzed : false,
       progressValue: 0,
       progressHeight: 5,
       modalIsOpen: false,
@@ -46,7 +46,8 @@ class App extends Component {
 
     }
 
-    this.apiUrl= 'https://express-ai.herokuapp.com';
+    //this.apiUrl= 'http://express-ai.herokuapp.com';
+    this.apiUrl= 'http://localhost:8080';
     this.progressHeight= 2;
   }
 
@@ -244,6 +245,7 @@ class App extends Component {
           this.refs.container.success(`Analyzing Successfully Done`, '', {
             timeOut: this.state.toastTimeOut
           });
+          this.setState({analyzed: true});
         }
         console.log(res);
         this._clearLoading();
@@ -327,7 +329,7 @@ class App extends Component {
               </StepTwo>
             : null
           }
-          { this.state.showStepThree ? <StepThree onClickAnalyze={this.handleAnalyze}></StepThree> : null }
+          { this.state.showStepThree ? <StepThree onClickAnalyze={this.handleAnalyze} analyzed={this.state.analyzed}></StepThree> : null }
 
           { this.state.analyzed ? <Results /> : null}
         </Wrapper>
