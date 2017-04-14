@@ -33,7 +33,7 @@ class App extends Component {
       linkFacebook : false,
       pullTwitter : false,
       pullFacebook : false,
-      analyzed : false,
+      analyzed : true,
       progressValue: 0,
       progressHeight: 5,
       modalIsOpen: false,
