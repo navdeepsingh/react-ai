@@ -10,6 +10,7 @@ import modalStyles from './assets/css/modal-styles';
 import axios from 'axios';
 import Util from './utils';
 import Progress from 'react-progress';
+import config from './config';
 import { ToastContainer, ToastMessage } from "react-toastr";
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
@@ -33,7 +34,7 @@ class App extends Component {
       linkFacebook : false,
       pullTwitter : false,
       pullFacebook : false,
-      analyzed : true,
+      analyzed : false,
       progressValue: 0,
       progressHeight: 5,
       modalIsOpen: false,
@@ -47,7 +48,7 @@ class App extends Component {
     }
 
     //this.apiUrl= 'http://express-ai.herokuapp.com';
-    this.apiUrl= 'http://localhost:8080';
+    this.apiUrl= config.api_url;
     this.progressHeight= 2;
   }
 
