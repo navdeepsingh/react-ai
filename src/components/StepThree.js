@@ -10,7 +10,7 @@ const stepTwo = (props) => {
           {
             !props.analyzed
             ? <button className="btn btn-lg btn-primary" onClick={props.onClickAnalyze}>Initiate Analyzing</button>
-            : <a href="#results" className="btn btn-lg btn-success pull-right" onClick={props.onClickResults}>Results</a>
+            : <a href="" onClick={props.onClickResults} className="btn btn-lg btn-success pull-right" onClick={props.onClickResults}>Results</a>
           }
 
 

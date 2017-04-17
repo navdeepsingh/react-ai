@@ -1,5 +1,5 @@
 const config = {
-  'api_url': 'https://express-ai.herokuapp.com'
+  'api_url': 'http://localhost:8080'
 }
 
 export default config;

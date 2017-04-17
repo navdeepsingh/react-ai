@@ -47,14 +47,17 @@ class App extends Component {
 
     }
 
-    //this.apiUrl= 'http://express-ai.herokuapp.com';
     this.apiUrl= config.api_url;
     this.progressHeight= 2;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this._progressBarLoading();
+  }
+
+  componentDidMount() {
     this._checkAuthorization();
+    this._clearLoading();
 
     //Animate Heading
     const heading = document.querySelector('.jump');
@@ -62,16 +65,16 @@ class App extends Component {
   }
 
   _progressBarLoading() {
-    this.interval = setInterval(() => {
+    this.progressInterval = setInterval(() => {
       let progressValue = this.state.progressValue;
 
-      if (progressValue === 100) {
+      /*if (progressValue === 100) {
       //  this.setState({progressValue: 0, progressHeight: 0});
         clearInterval(this.interval);
         return;
-      }
+      }*/
 
-      progressValue += 2;
+      progressValue += 1;
       this.setState({progressValue: progressValue});
 
     }, 10);
@@ -80,13 +83,16 @@ class App extends Component {
   _clearLoading() {
     //this.setState({progressValue: 100});
     this.setState({progressValue: 0});
-    //clearInterval(this.interval);
+    clearInterval(this.progressInterval);
   }
 
 
   _checkAuthorization() {
-    const twToken = Util.getCookie(`twitterToken`);
-    const fbToken = Util.getCookie(`facebookToken`);
+
+    //const twToken = Util.getCookie(`twitterToken`);
+    //const fbToken = Util.getCookie(`facebookToken`);
+    const twToken = localStorage.getItem('twitterToken');
+    const fbToken = localStorage.getItem('facebookToken');
     const token = `${twToken}|${fbToken}`;
     if (token && token !== '|') {
       axios.get(this.apiUrl + `/api/auth?token=${token}`)
@@ -180,25 +186,27 @@ class App extends Component {
 
   handleTwitterPull = (e)=>{
     e.preventDefault();
-    let token = Util.getCookie(`twitterToken`);
+    let token = localStorage.getItem('twitterToken');
     this._progressBarLoading();
     axios.get(this.apiUrl + '/auth/twitter/statuses/home_timeline?token=' + token)
       .then(res => {
+        return this._checkAuthorization();
+      })
+      .then(res => {
+        // Set States
+        this.setState({PullTwitter : true});
         // Display Toastr
         this.refs.container.success(`Tweets Successfully Pulled`, '', {
           timeOut: this.state.toastTimeOut
         });
-
-        // Set States
-        this.setState({PullTwitter : true});
-        this._checkAuthorization();
-        this._clearLoading();
+        //this._clearLoading();
       });
   }
 
   handleFacebookPull = (e)=>{
     e.preventDefault();
-    let token = Util.getCookie(`facebookToken`);
+    //let token = Util.getCookie(`facebookToken`);
+    let token = localStorage.getItem('facebookToken');
     this._progressBarLoading();
     axios.get(this.apiUrl + '/auth/facebook/feed?token=' + token)
       .then(res => {
@@ -216,8 +224,8 @@ class App extends Component {
   handleViewFeeds = (e) => {
     e.preventDefault();
     this.setState({modalIsOpen: true});
-    const twToken = Util.getCookie(`twitterToken`);
-    const fbToken = Util.getCookie(`facebookToken`);
+    const twToken = localStorage.getItem('twitterToken');
+    const fbToken = localStorage.getItem('facebookToken');
     const token = `${twToken}|${fbToken}`;
     axios.get(this.apiUrl + '/api/view-feeds?token=' + token)
       .then(res => {
@@ -230,8 +238,8 @@ class App extends Component {
 
   handleAnalyze = (e) => {
     e.preventDefault();
-    const twToken = Util.getCookie(`twitterToken`);
-    const fbToken = Util.getCookie(`facebookToken`);
+    const twToken = localStorage.getItem('twitterToken');
+    const fbToken = localStorage.getItem('facebookToken');
     const token = `${twToken}|${fbToken}`;
     this._progressBarLoading();
     axios.get(this.apiUrl + '/api/analyze?token=' + token)
@@ -254,6 +262,11 @@ class App extends Component {
       .catch(err => {
         console.error(err);
       });
+  }
+
+  handleResults(e) {
+    e.preventDefault();
+    window.location = '/#results';
   }
 
   handleCloseModal() {
@@ -330,7 +343,7 @@ class App extends Component {
               </StepTwo>
             : null
           }
-          { this.state.showStepThree ? <StepThree onClickAnalyze={this.handleAnalyze} analyzed={this.state.analyzed}></StepThree> : null }
+          { this.state.showStepThree ? <StepThree onClickAnalyze={this.handleAnalyze} analyzed={this.state.analyzed} onClickResults={this.handleResults}></StepThree> : null }
 
           { this.state.analyzed ? <Results /> : null}
         </Wrapper>
